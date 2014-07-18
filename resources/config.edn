@@ -1,0 +1,10 @@
+{
+  ; Each component has an optional configuration map here
+  :router {}
+  :http {:port 8080}
+
+  :nomad/environments {
+   "development"  {:debug-mode? true}
+   "production"   (:debug-mode? false)
+  }
+}

@@ -1,0 +1,14 @@
+{:title "Recipes"
+ :template :recipe
+ :recipes [
+  {:name "Enchiladas"
+   :ingredients ["beans", "cheese", "hot sauce"]
+   :directions "Cook and eat!"
+  }
+
+  {:name "Miso Glazed Salmon"
+   :ingredients ["Salmon", "Miso paste", "Lemon"]
+   :directions "Make glaze, coat salmon, broil quickly and watch carefully."
+  }
+ ]
+}
