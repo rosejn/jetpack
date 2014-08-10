@@ -23,15 +23,18 @@ Install the less compiler to make the production css:
 ### Usage
 
 To develop your site:
+
      $ lein repl
      > (go)
      ... make edits
      > (refresh)
 
 To run in the foreground:
+
      $ lein run
 
 To start the site as a daemon run:
+
      $ lein daemon start site
 
 ### Pages
@@ -54,6 +57,8 @@ JetPack adds a set of standard keys to the map passed into all layout functions:
 * site: map of site wide info plus the user configuration from config.edn
 * page: page header map
 * content: the rendered page content
+
+TODO - Implement something along these lines ala Jekyll:
 
 The site map:
 * time: current time
