@@ -20,5 +20,6 @@
 
 (defn http-server-component
   [config]
-  (print config)
+  (log/info "http config:")
+  (log/info config)
   (map->HTTPServer config))

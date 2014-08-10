@@ -13,6 +13,13 @@ augment the system with their own logic, web handling, websockets, etc...
 JetPack uses the [component](https://github.com/stuartsierra/component) library
 to manage component lifecycles and allow for smooth repl driven development.
 
+### Setup
+
+Install the less compiler to make the production css:
+
+    $ npm install less -g
+
+
 ### Usage
 
 To develop your site:

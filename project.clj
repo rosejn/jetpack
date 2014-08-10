@@ -13,6 +13,7 @@
                  [org.clojure/tools.trace "0.7.8"]    ; quick debug tool
                  [clj-time "0.6.0"]                   ; time & date utils
                  [me.raynes/fs "1.4.5"]               ; file system utils
+                 [clojure-watch "0.1.9"]              ; watch fs for updates
 
                  [http-kit "2.0.0"]
                  [ring "1.3.0"]

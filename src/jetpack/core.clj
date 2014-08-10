@@ -1,6 +1,5 @@
 (ns jetpack.core
   (:require
-    [nomad :refer (defconfig)]
     [ring.middleware.reload :as reload]
     [ring.util.response :as resp]
     ring.middleware.cors
@@ -11,35 +10,24 @@
     [compojure.core :refer (routes defroutes GET ANY PUT POST DELETE)]
     [compojure.route :as route]
     [compojure.handler :refer (site)]
-    [hiccup.core :refer (html)]
+    [hiccup.page :refer (html5)]
     [jetpack.users :refer (users)]
-    [jetpack.data :as data]
+    [jetpack.pages :as pages]
     [jetpack.template :as tpl]))
 
 (defn render-page
-  [req page-name]
-  (let [page (get (data/pages) (keyword page-name))
+  [loader page-name]
+  (println "render-page: " page-name)
+  (let [page (pages/get-page loader page-name)
         template (get page :template :page)]
-    (html (tpl/render-template template page))))
+    (html5 (tpl/render-template template page))))
 
-(defroutes site-routes
-  (GET "/" [] (render-page nil "index"))
-  ;(GET "/data" [] data-websocket)
-  (GET "/test" [] (fn [req] "This is a custom route test")))
-
-(defroutes admin-routes*
+(defroutes admin-routes
   (GET "/" [] (fn [req] "ADMIN PAGE")))
 
-(def admin-routes
-  (-> #'admin-routes*
-      ;(wrap-basic-authentication admin-authenticated?)
-      ))
-
-(defroutes page-routes
-  (GET "/page/:page" [page] #(render-page % page))
-  (route/files "/" {:root "public"})
+(defroutes auth-routes
   (GET "/login" req
-    (html (tpl/login-form)))
+    (html5 (tpl/login-form)))
   (GET "/logout" req
     (friend/logout* (resp/redirect (str (:context req) "/"))))
   (GET "/requires-authentication" req
@@ -47,22 +35,33 @@
   (GET "/role-user" req
     (friend/authorize #{:jetpack.users/user} "You're a user!"))
   (GET "/role-admin" req
-    (friend/authorize #{:jetpack.users/admin} "You're an admin!"))
-  (route/not-found "Page not found"))
+    (friend/authorize #{:jetpack.users/admin} "You're an admin!")))
+
+(defn page-routes
+  [page-loader]
+  (routes
+    (GET "/:page" [page] (fn [_] (render-page page-loader page)))
+    (route/files "/" {:root "public"})
+    (route/not-found (html5 (tpl/page "Page Not Found" [:p "Page not found"])))))
+
+(defroutes site-routes
+  (GET "/" [] (render-page nil "index"))
+  ;(GET "/data" [] data-websocket)
+  (GET "/test" [] (fn [req] "This is a custom route test")))
 
 (defn app-handler
- [config]
+ [page-loader]
  (-> (site
        (friend/authenticate
        (routes
-         (ANY "*" [] #'site-routes)
-         (ANY "*" [] #'page-routes)
-         ()
-         (ANY "/admin/*" [] admin-routes))
+         (ANY "*" []        #'auth-routes)
+         (ANY "/admin/*" [] #'admin-routes)
+         (ANY "*" []        #'site-routes)
+         (ANY "*" []        (page-routes page-loader)))
        {:allow-anon? true
         :login-uri "/login"
         :default-landing-uri "/"
-        :unauthorized-handler #(-> (html [:h2 "You do not have sufficient privileges to access " (:uri %)])
+        :unauthorized-handler #(-> (html5 [:h2 "You do not have sufficient privileges to access " (:uri %)])
                                    resp/response
                                    (resp/status 401))
         :credential-fn #(creds/bcrypt-credential-fn @users %)

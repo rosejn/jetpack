@@ -41,7 +41,7 @@
   (init)
   (start))
 
-(defn reset []
+(defn restart []
   (stop)
   (refresh :after 'user/go))
 

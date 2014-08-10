@@ -3,15 +3,21 @@
             [jetpack.core :refer [app-handler]]
             [taoensso.timbre :as log]))
 
-(defrecord Router [config]
+(defrecord Router [page-loader]
   component/Lifecycle
   (start [component]
     (if (:handler component)
       component
-      (assoc component :handler (app-handler config))))
+      (do
+        (log/info "Starting router")
+        (assoc component :handler (app-handler page-loader)))))
+
   (stop [component]
+    (log/info "Stopping router")
     (dissoc component :handler)))
 
 (defn router-component [config]
-  (map->Router {:config config}))
+  (log/info "router config:")
+  (log/info config)
+  (map->Router config))
 

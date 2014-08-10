@@ -1,11 +1,11 @@
-(ns jetpack.data
+(ns jetpack.pages
   (:require [clojure.java.io :as io]
             [clojure.string :as string]
+            [jetpack.config :refer (CONFIG)]
             [me.raynes.fs :as fs]
             [markdown.core :refer (md-to-html-string)]
-            [clj-time.coerce :as time]))
-
-(def PAGE-DIR "pages")
+            [clj-time.coerce :as time]
+            [clojure-watch.core :refer [start-watch]]))
 
 (defmulti render-content
   (fn [ftype content] ftype))
@@ -60,10 +60,36 @@
         entries   (filter #(valid-suffix? (.getName %)) (filter fs/file? (file-seq entry-dir)))]
     (map load-page entries)))
 
-(defn pages
-  []
+(defn load-pages
+  [path]
   (into {}
         (map (fn [e]
                [(keyword (first (string/split (.getName (:file e)) #"\."))) e])
-             (load-dir PAGE-DIR))))
+             (load-dir path))))
+
+(defn get-page
+  [loader page-name]
+  (println "LOADER: ")
+  (println loader)
+  (println "PAGE-NAME: " page-name)
+  (get @(:pages* loader) (keyword page-name)))
+
+; TODO:
+; * load only a single page that was created or modified, and delete entry
+; for a page that was removed, rather than reloading all.
+(defn start-page-loader
+  [page-dir]
+  (let [pages* (atom {})
+        stop-watcher (start-watch [{:path page-dir
+                                    :event-types [:create :modify :delete]
+                                    :options {:recursive true}
+                                    :bootstrap (fn [path]
+                                                 (println "Watching page directory: " path)
+                                                 (reset! pages* (load-pages path)))
+                                    :callback (fn [event filename]
+                                                (println event filename)
+                                                (reset! pages* (load-pages page-dir)))
+                                    }])]
+    {:pages* pages*
+     :stop stop-watcher}))
 

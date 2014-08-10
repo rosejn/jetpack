@@ -1,73 +1,41 @@
 (ns jetpack.template
   (:require [hiccup.core :refer (html)]
             [hiccup.page :refer (html5 include-js include-css)]
-            [jetpack.data :as data]
             [clj-time.core :as t]))
 
 (defmulti render-template
   (fn [tpl content] tpl))
 
-(defn stylesheets
-  []
-  (conj
-    (map include-css
-         ["/css/grid.css"
-          "/css/style.css"
-          "/css/normalize.css"
-          "/css/font-awesome.css"
-          ;"/js/google-code-prettify/prettify.css"
-          "/css/uniform.default.css"
-          "/css/main.css"
-          "/css/flexslider.css"
-          "/js/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"
-          "http://fonts.googleapis.com/css?family=Libre+Baskerville:400,700"])
-    [:link {:href "/css/print.css", :media "print", :type "text/css", :rel "stylesheet"}]))
+(defn stylesheets []
+  (map include-css [
+                    "/css/bootstrap.min.css"
+                    "/css/jetpack.css"
+                    ]))
 
 (defn javascripts
   []
   (list
-    [:script {:src "/js/detectmobilebrowser.js"}]
-    [:script {:src "/js/modernizr.js"}]
-    [:script {:src "/js/jquery.imagesloaded.min.js"}]
-    [:script {:src "/js/jquery.fitvids.js"}]
-    ;[:script {:src "/js/google-code-prettify/prettify.js"}]
-    [:script {:src "/js/jquery.uniform.min.js"}]
-    [:script {:src "/js/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML,lg"}]
-    [:script {:src "/js/syntaxhighlighter_3.0.83/scripts/shCore.js"}]
-    [:script {:src "/js/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"}]
-    [:script {:src "/js/syntaxhighlighter_3.0.83/scripts/shBrushClojure.js"}]
-    [:script {:src "/js/syntaxhighlighter_3.0.83/scripts/shBrushBash.js"}]
-    [:script {:src "/js/main.js"}]))
-
-(defn title-banner
-  []
-  [:hgroup
-   [:h1 {:class "site/-title"} " " [:a {:rel "blog", :title "Life is a Graph", :href "/"} "Life is a Graph"] " "]
-   (comment  [:h2 {:class "site-description"} ". . . and you are a node"])])
+    [:script {:src "/js/jquery-2.1.1.min.js"}]
+    [:script {:src "/js/bootstrap.min.js"}]))
 
 (defn navigation
   []
-  [:nav {:role "navigation", :class "main-navigation", :id "site-navigation"}
-   [:ul
-    [:li {:class "current-menu-item"}
-     [:a {:href "/blog"} "Blog"]]
-    ;[:li [:a {:href "projects"} "Projects"]]
-    ;[:li [:a {:href "projects"} "Books"]]
-    ;[:li [:a {:href "projects"} "Food"]]
-    [:li [:a {:href "/about"} "About"]]
-    (comment  [:li
-     [:form {:action "#", :id "search-form", :method "get", :role "search"}
-      [:label {:for "search", :class "screen-reader-text"} "Search"]
-      [:input {:title "Enter keyword", :id "search", :name "s", :value "", :type "text"}]
-      [:input {:value "→", :title "Search it", :id "search-submit", :type "submit"}]]])
-    ]])
+  [:div.navbar.navbar-inverse.navbar-fixed-top {:role "navigation"}
+   [:div.container
+    [:div.navbar-header
+     [:button.navbar-toggle {:type "button" :data-toggle "collapse"}
+      [:span.sr-only "Toggle Navigation"]
+      (repeat 3 [:span.icon-bar])]
+     [:a.navbar-brand {:href "/"} "JetPack"]]
+     [:div.collapse.navbar-collapse
+      [:ul.nav.navbar-nav
+       [:li.active [:a {:href "/blog"} "Blog"]]
+       [:li [:a {:href "/about"} "About"]]]]]])
 
 (defn footer
-  []
-  [:footer {:role "contentinfo", :class "site-footer wrapper"}
-   [:div.row
-    [:div#supplementary.row-fluid]]])
-
+  [content]
+  [:div.sticky-footer
+   [:div.container content]])
 
 (defn blog-post
   [topic title body timestamp]
@@ -109,70 +77,22 @@
    [:head
     [:meta {:charset "utf-8"}]
     [:meta {:content "width=device-width, initial-scale=1, maximum-scale=1", :name "viewport"}]
-    [:meta {:content "IE=edge,chrome=1", :http-equiv "X-UA-Compatible"}]
-    [:meta {:content "Read - Responsive HTML5 Template", :name "description"}]
-    [:meta {:content "read, blog, html5, portfolio", :name "keywords"}]
-
-    [:title "Life is a Graph - " title]
-
-    [:link {:href "images/ico/favicon.ico", :rel "shortcut icon"}]
-    [:link {:href "images/ico/logo-144.png", :sizes "144x144", :rel "apple-touch-icon-precomposed"}]
-    [:link {:href "images/ico/logo-114.png", :sizes "114x114", :rel "apple-touch-icon-precomposed"}]
-    [:link {:href "images/ico/logo-72.png", :sizes "72x72", :rel "apple-touch-icon-precomposed"}]
-    [:link {:href "images/ico/logo-57.png", :rel "apple-touch-icon-precomposed"}]
-
-    (google-font "Lora" ":400,700,400italic,700italic")
-    (google-font "Rationale")
-    (google-font "Coustard")
-
-    ;(stylesheets)
-
-    [:script {:src "/js/jquery-1.8.3.min.js"}]
-    [:script "window.jQuery || document.write('<script src=\"/js/jquery-1.8.3.min.js\"><\\/script>')"]]
-
+    [:title title]
+    (stylesheets)]
    [:body
-    [:div#page.hfeed.site
-     [:header.site-header.wrapper {:role "banner"}
-      [:div.row
-       (title-banner)
-       (navigation)]]
-
-  [:section#main.middle.wrapper
-   [:div.row.row-fluid
-    [:div#primary.site-content
-     [:div#content {:role "main"} content ]]]]
-
-     (footer)]
-    ;(javascripts)
-    ]])
+    (navigation)
+    [:div.container.main content]
+    (footer "Your footer here...")
+    (javascripts)]])
 
 (defn blog-body
   [posts]
   [:div.blog-posts.readable-content
    (map (fn [{:keys [topic title body timestamp]}] (blog-post topic title body timestamp)) posts)])
 
-(defn about
-  []
-  (let [content (:about (data/pages))]
-    (page "Life is a Graph - About"
-          [:div.about-page {:class "readable-content row-fluid page"}
-           [:article {:class "page hentry"}
-            [:header {:class "entry-header"}
-             [:img {:alt "profile-image", :src "images/about_banner.jpg"}]]
-            [:div {:class "entry-content"}
-             ;[:h1 {:class "entry-title"} "Hello..."]
-             [:p {:class "lead"} (:title content)]
-             (:body content)]]
-           [:h3 "On the Web"]
-           [:ul {:class "social"}
-            [:li [:a {:href "http://github.com/rosejn", :class "github"} "GitHub"]]
-            [:li [:a {:href "http://www.linkedin.com/in/rosejn", :class "linkedin"} "LinkedIn"]]
-            [:li [:a {:href "https://twitter.com/rosejn", :class "twitter"} "Twitter"]]
-            ;[:li [:a {:href "#", :class "google"} "k"]]
-            ]])))
-
 (defmethod render-template :page
   [_ {:keys [title body]}]
+  (println "render-template: " title)
   (page title
         [:div {:class "readable-content row-fluid page"}
          [:article {:class "page hentry"}
@@ -197,7 +117,6 @@
             [:h3 "Directions"]
             (:directions recipe)])]))
 
-
 (defn login-form
   []
   (page "Login"
@@ -209,3 +128,4 @@
             [:div "Username" [:input {:type "text" :name "username"}]]
             [:div "Password" [:input {:type "password" :name "password"}]]
             [:div [:input {:type "submit" :class "button" :value "Login"}]]]]]]))
+
