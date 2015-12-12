@@ -6,7 +6,6 @@
 
 (defrecord PageLoader [page-dir]
   component/Lifecycle
-
   (start [component]
     (log/info "Starting page loader...")
     (if-not (:stop component)
@@ -24,4 +23,5 @@
 
 (defn page-loader-component
   [config]
+  (log/info "Creating the page loader...")
   (map->PageLoader config))

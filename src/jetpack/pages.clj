@@ -64,7 +64,7 @@
   [path]
   (into {}
         (map (fn [e]
-               [(keyword (first (string/split (.getName (:file e)) #"\."))) e])
+               [(first (string/split (.getName (:file e)) #"\.")) e])
              (load-dir path))))
 
 (defn get-page
@@ -72,7 +72,8 @@
   (println "LOADER: ")
   (println loader)
   (println "PAGE-NAME: " page-name)
-  (get @(:pages* loader) (keyword page-name)))
+  (println @(:pages* loader))
+  (get @(:pages* loader) page-name))
 
 ; TODO:
 ; * load only a single page that was created or modified, and delete entry

@@ -5,34 +5,32 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[org.clojure/clojure "1.6.0"]
-                 [jarohen/nomad "0.6.3"]              ; environment & config files
-                 [com.taoensso/timbre "3.2.0"]        ; logging
-                 [com.stuartsierra/component "0.2.1"] ; managing stateful components
-                 [org.clojure/tools.namespace "0.2.5"] ; ns helpers
-                 [org.clojure/tools.trace "0.7.8"]    ; quick debug tool
-                 [clj-time "0.6.0"]                   ; time & date utils
-                 [me.raynes/fs "1.4.5"]               ; file system utils
-                 [clojure-watch "0.1.9"]              ; watch fs for updates
+  :dependencies [[org.clojure/clojure "1.8.0-beta2"]
+                 [jarohen/nomad "0.7.2"]              ; environment & config files
+                 [com.taoensso/timbre "4.1.4"]        ; logging
+                 [com.stuartsierra/component "0.3.1"] ; managing stateful components
+                 [org.clojure/tools.namespace "0.2.10"] ; ns helpers
+                 [org.clojure/tools.trace "0.7.9"]    ; quick debug tool
+                 [clj-time "0.11.0"]                   ; time & date utils
+                 [me.raynes/fs "1.4.6"]               ; file system utils
+                 [clojure-watch "0.1.11"]             ; watch fs for updates
 
-                 [http-kit "2.0.0"]
-                 [ring "1.3.0"]
+                 [http-kit "2.1.19"]
+                 [ring "1.4.0"]
                  ;[ring/ring-devel "1.1.8"]
-                 [ring/ring-json "0.2.0"]
-                 [ring-cors "0.1.0"]
-                 [ring-basic-authentication "1.0.2"]
-                 [compojure "1.1.6"]
+                 [ring/ring-json "0.4.0"]
+                 [ring-cors "0.1.7"]
+                 [ring-basic-authentication "1.0.5"]
+                 [compojure "1.4.0"]
                  [com.cemerick/friend "0.2.1"]
 
-                 [hiccup "1.0.4"]
-                 [markdown-clj "0.9.33"]
-                 [enlive "1.1.4"]
+                 [hiccup "1.0.5"]
+                 [markdown-clj "0.9.82"]
+                 [enlive "1.1.6"]
 
-                 [jarohen/chord "0.4.2"]  ; core.async channels over http
-                 ;[org.clojure/core.async "0.1.256.0-1bf8cf-alpha"]
-                 ;[clj-jgit "0.6.1"]
+                 [jarohen/chord "0.7.0"]  ; core.async channels over http
                  ]
-  :main jetpack.core
+  ;:main jetpack.core
 
   :profiles
   {:dev  {:dependencies  [[javax.servlet/servlet-api "2.5"]

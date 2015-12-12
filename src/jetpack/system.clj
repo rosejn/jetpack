@@ -7,7 +7,6 @@
 
 (defn jetpack-system
   [{:keys [loader router http] :as config}]
-  (log/info "Starting jetpack system...")
   (component/system-map
     :page-loader (page-loader-component loader)
     :router  (component/using (router-component router) [:page-loader])

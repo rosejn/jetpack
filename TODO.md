@@ -1,4 +1,4 @@
-# Bloggit System TODOs
+# JetPack TODOs
 
 ### New Project Setup
 

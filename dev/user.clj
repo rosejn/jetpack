@@ -25,6 +25,7 @@
   "Starts the system if it hasn't already been started."
   []
   (log/info "starting system")
+  (init)
   (alter-var-root #'system component/start)
   (log/info "system started")
   :started)
@@ -37,11 +38,7 @@
   (log/info "system stopped")
   :stopped)
 
-(defn go []
-  (init)
-  (start))
-
 (defn restart []
   (stop)
-  (refresh :after 'user/go))
+  (refresh :after 'user/start))
 
